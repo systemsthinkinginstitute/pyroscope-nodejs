@@ -197,7 +197,7 @@ async function uploadProfile(profile: perftools.perftools.profiles.IProfile) {
     if (config.basicAuthUser && config.basicAuthPassword) {
       headers.set('Authorization', 'Basic ' + Buffer.from(config.basicAuthUser + ":" + config.basicAuthPassword).toString('base64'));
     }
-
+    headers['Transfer-Encoding'] = 'chunked'
     return fetch(url, {
       method: 'POST',
       body: formData as any,
