@@ -2,7 +2,6 @@ import * as pprof from 'pprof'
 
 import type perftools from 'pprof/proto/profile'
 import debug from 'debug'
-import axios, { AxiosBasicCredentials, AxiosError } from 'axios'
 import FormData from 'form-data'
 import 'regenerator-runtime/runtime'
 
@@ -82,7 +81,7 @@ export function init(c: Partial<PyroscopeConfig> = {}): void {
   config.configured = true
 }
 
-function handleError(error: AxiosError) {
+function handleError(error: any) {
   if (error.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
@@ -195,19 +194,15 @@ async function uploadProfile(profile: perftools.perftools.profiles.IProfile) {
     if (config.tenantID) {
       headers['X-Scope-OrgID'] = config.tenantID
     }
-    const auth: AxiosBasicCredentials | undefined =
-      config.basicAuthUser && config.basicAuthPassword
-        ? {
-            username: config.basicAuthUser,
-            password: config.basicAuthPassword,
-          }
-        : undefined
-    return axios(url, {
+    if (config.basicAuthUser && config.basicAuthPassword) {
+      headers.set('Authorization', 'Basic ' + Buffer.from(config.basicAuthUser + ":" + config.basicAuthPassword).toString('base64'));
+    }
+
+    return fetch(url, {
       method: 'POST',
-      headers: headers,
-      data: formData as any,
-      auth: auth,
-    }).catch(handleError)
+      body: formData as any,
+      headers,
+    })
   }
 }
 

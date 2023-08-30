@@ -13,7 +13,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
-    "test/**/*.{ts,js}",    
+    "test/**/*.{ts,js}",
     "!**/node_modules/**",
     "!**/vendor/**"
   ],
@@ -21,6 +21,7 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest",
   },
   globals: {
+    fetch: global.fetch,
     'ts-jest': {
       tsconfig: './config/tsconfig.jest.json',
     },
